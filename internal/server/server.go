@@ -7,10 +7,14 @@ type Server struct {
 	version   string
 }
 
+const (
+	version = "0.0.1-development"
+)
+
 func NewServer() *Server {
 	return &Server{
 		startTime: time.Now(),
-		version:   "0.0.1-development",
+		version:   version,
 	}
 }
 
