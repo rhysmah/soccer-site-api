@@ -14,16 +14,14 @@ func home(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-
-	server := interal.NewServer()
+	srv := server.NewServer()
 
 	mux := http.NewServeMux()
-
 	mux.HandleFunc("/", home)
-	mux.HandleFunc("/health", handlers.HealthHandler(server))
+	mux.HandleFunc("/health", handlers.HealthHandler(srv))
 
 	log.Print("Starting server on :8080")
-	log.Printf("Server version: %s", server.GetVersion())
+	log.Printf("Server version: %s", srv.GetVersion())
 
 	if err := http.ListenAndServe(":8080", mux); err != nil {
 		log.Fatalf("Server failed to start: %v", err)
