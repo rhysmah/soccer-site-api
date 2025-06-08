@@ -1,6 +1,7 @@
 # Soccer Site - API Backend
 
 ## Structure
+
 ### HTTP Server
 The HTTP server acts as a message send-and-receive system.
 
@@ -20,9 +21,10 @@ As per _Learning Go: An Idiomatic Approach to Real-World Go Programming_:
 Thus, I have created the Server struct, with methods for accessing `startTime` and `version`. This data is then accessibly via the appropriate methods. 
 
 ### Health Check API
-An endpoint that checks your API and alerts you when something's wrong.
+An endpoint that checks your API and alerts you when something's wrong. It's essentially a diagnostic tool.
 
-It's essentially a diagnostic tool.
+#### Error-Handling the Health Check
+
 
 ##### Resources
 - https://testfully.io/blog/api-health-check-monitoring/
