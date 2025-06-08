@@ -1,20 +1,20 @@
-package interal
+package server
 
 import "time"
+
+const (
+	DefaultVersion = "0.0.1-development"
+)
 
 type Server struct {
 	startTime time.Time
 	version   string
 }
 
-const (
-	version = "0.0.1-development"
-)
-
 func NewServer() *Server {
 	return &Server{
 		startTime: time.Now(),
-		version:   version,
+		version:   DefaultVersion,
 	}
 }
 

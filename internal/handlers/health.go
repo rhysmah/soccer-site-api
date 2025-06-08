@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 )
@@ -15,9 +16,6 @@ type HealthResponse struct {
 
 func HealthHandler(server ServerProvider) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Cache-Control", "no-cache, no-store")
-
 		response := HealthResponse{
 			Status:    "Healthy",
 			Timestamp: time.Now(),
@@ -25,7 +23,30 @@ func HealthHandler(server ServerProvider) http.HandlerFunc {
 			Uptime:    server.GetUptime().String(),
 		}
 
-		json.NewEncoder(w).Encode(response)
+		// Encode to JSON in memory first, before touching HTTP response
+		// Cannot alter HTTP response once written, but encoding may fail
+		jsonData, err := json.Marshal(response)
+		if err != nil {
+			log.Printf("Failed to marshal health response: %v", err)
+			w.Header().Set("Content-Type", "text/plain")
+			w.WriteHeader(http.StatusInternalServerError)
+
+			// Log any errors
+			_, err := w.Write([]byte("Internal Server Error: failed to generate health check"))
+			if err != nil {
+				log.Printf("Failed to write health response: %v", err)
+			}
+			return
+		}
+
+		// JSON encoding succeeded
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Cache-Control", "no-cache, no-store")
+		w.WriteHeader(http.StatusOK)
+
+		if _, err := w.Write(jsonData); err != nil {
+			log.Printf("Failed to write health response: %v", err)
+		}
 	}
 }
 
